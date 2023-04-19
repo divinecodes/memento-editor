@@ -3,8 +3,8 @@ package io.turntabl;
 public class Memento {
     private String text;
 
-    public Memento(String article) {
-        this.text = article;
+    public Memento(String text) {
+        this.text = text;
     }
 
     public String getText() {

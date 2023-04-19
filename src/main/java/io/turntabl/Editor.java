@@ -1,19 +1,22 @@
 package io.turntabl;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  *  the care taker
  */
 public class Editor {
-    ArrayList<Memento> savedMementoList = new ArrayList<>();
+    Stack<Memento> mementoStack = new Stack<>();
+    Stack<Memento> redoStack = new Stack<>();
 
     /**
      * add new memento
      * @param memento - the memento to add
      */
     public void addMemento(Memento memento){
-        savedMementoList.add(memento);
+        //savedMementoList.add(memento);
+        mementoStack.push(memento);
     }
 
     /**
@@ -22,6 +25,6 @@ public class Editor {
      * @return  - returns an instance of the memento
      */
     public Memento getMemento(int index){
-        return savedMementoList.get(index);
+        return mementoStack.get(index);
     }
 }

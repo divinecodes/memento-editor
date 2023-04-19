@@ -1,6 +1,8 @@
 package io.turntabl;
 
-// The originator
+/**
+ * The Originator
+ */
 public class EditorData {
     private String text;
 

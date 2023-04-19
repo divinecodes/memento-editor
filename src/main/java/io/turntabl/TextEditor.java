@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 public class TextEditor extends JFrame{
 
     private JButton saveButton, undoButton, redoButton;
-    private JTextArea editorTextArea = new JTextArea(50,60);
+    private JTextArea editorTextArea = new JTextArea(30,40);
     private Editor editor = new Editor();
     private EditorData editorData = new EditorData();
     int savedFiles, currentTextIndex = 0;
@@ -71,6 +71,7 @@ public class TextEditor extends JFrame{
          */
         public void saveAction(){
             String inputText = editorTextArea.getText();
+
             editorData.set(inputText);
             editor.addMemento(editorData.storeInMemento());
 
@@ -88,7 +89,6 @@ public class TextEditor extends JFrame{
         public void undoAction() {
             if(currentTextIndex >= 1){
                 currentTextIndex--;
-
                 String restoredText = editorData.restoreFromMemento(
                         editor.getMemento(currentTextIndex)
                 );
@@ -113,7 +113,7 @@ public class TextEditor extends JFrame{
                 );
 
                 editorTextArea.setText(restoredText);
-                undoButton.setEnabled(false);
+                undoButton.setEnabled(true);
 
             } else {
                 redoButton.setEnabled(false);
