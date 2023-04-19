@@ -1,17 +1,17 @@
 package io.turntabl;
 
 public class Memento {
-    private String article;
+    private String text;
 
     public Memento(String article) {
-        this.article = article;
+        this.text = article;
     }
 
-    public String getArticle() {
-        return article;
+    public String getText() {
+        return text;
     }
 
-    public void setArticle(String article) {
-        this.article = article;
+    public void setText(String text) {
+        this.text = text;
     }
 }

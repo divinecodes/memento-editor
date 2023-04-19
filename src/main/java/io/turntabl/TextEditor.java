@@ -1,19 +1,16 @@
 package io.turntabl;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicButtonListener;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TextEditor extends JFrame{
 
     private JButton saveButton, undoButton, redoButton;
-    private JTextArea textArea = new JTextArea(50,60);
-    private Caretaker caretaker = new Caretaker();
-    Originator originator = new Originator();
-    int savedFiles, currentArticle = 0;
+    private JTextArea editorTextArea = new JTextArea(50,60);
+    private Editor editor = new Editor();
+    private EditorData editorData = new EditorData();
+    int savedFiles, currentTextIndex = 0;
 
     public static void main(String[] args) {
 
@@ -25,9 +22,14 @@ public class TextEditor extends JFrame{
         this.setTitle("Memento Editor X");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+        setUpWidgets();
+    }
+
+    private void setUpWidgets()
+    {
         JPanel jPanel = new JPanel();
-        jPanel.add(new JLabel("New Article"));
-        jPanel.add(textArea);
+        jPanel.add(new JLabel("Untitled Text"));
+        jPanel.add(editorTextArea);
 
         ButtonListener saveListener = new ButtonListener();
         ButtonListener redoListener = new ButtonListener();
@@ -51,48 +53,68 @@ public class TextEditor extends JFrame{
     }
 
     class ButtonListener implements ActionListener{
-        public void actionPerformed(ActionEvent e){
-            if(e.getSource() == saveButton){
-                String textInTextArea = textArea.getText();
-                originator.set(textInTextArea);
-                caretaker.addMemento(originator.storeInMemento());
+        public void actionPerformed(ActionEvent event){
 
-                savedFiles++;
-                currentArticle++;
-
-                System.out.println("Save Files "+savedFiles);
-
-                undoButton.setEnabled(true);
+            if(event.getSource() == saveButton){
+                saveAction();
+            } else if(event.getSource() == undoButton) {
+                undoAction();
             } else {
-                if(e.getSource() == undoButton){
-                    if (currentArticle >= 1) {
-                        currentArticle--;
+                redoAction();
+            }
+        }
 
-                        String textBoxString = originator.restoreFromMemento(
-                                caretaker.getMemento(currentArticle)
-                        );
+        /**
+         * save action
+         */
+        public void saveAction(){
+            String inputText = editorTextArea.getText();
+            editorData.set(inputText);
+            editor.addMemento(editorData.storeInMemento());
 
-                        textArea.setText(textBoxString);
+            savedFiles++;
+            currentTextIndex++;
 
-                        redoButton.setEnabled(true);
-                    } else{
-                        undoButton.setEnabled(false);
-                    }
-                } else {
-                    if(e.getSource() == redoButton){
-                        if((savedFiles - 1) > currentArticle){
-                            currentArticle++;
-                            String textBoxString = originator.restoreFromMemento(
-                                    caretaker.getMemento(currentArticle)
-                            );
+            System.out.println("Save Files: "+savedFiles);
 
-                            textArea.setText(textBoxString);
-                            undoButton.setEnabled(true);
-                        } else {
-                            redoButton.setEnabled(false);
-                        }
-                    }
-                }
+            undoButton.setEnabled(true); //enable the undo button
+        }
+
+        /**
+         * perform undo
+         */
+        public void undoAction() {
+            if(currentTextIndex >= 1){
+                currentTextIndex--;
+
+                String restoredText = editorData.restoreFromMemento(
+                        editor.getMemento(currentTextIndex)
+                );
+
+                editorTextArea.setText(restoredText);
+
+                redoButton.setEnabled(true);
+            } else {
+                undoButton.setEnabled(false);
+            }
+        }
+
+        /**
+         *  perform redo
+         */
+        public void redoAction() {
+            if((savedFiles -1 ) > currentTextIndex){ //
+                currentTextIndex++;
+
+                String restoredText = editorData.restoreFromMemento(
+                        editor.getMemento(currentTextIndex)
+                );
+
+                editorTextArea.setText(restoredText);
+                undoButton.setEnabled(false);
+
+            } else {
+                redoButton.setEnabled(false);
             }
         }
     }
