@@ -31,17 +31,17 @@ public class TextEditor extends JFrame{
         jPanel.add(new JLabel("Untitled Text"));
         jPanel.add(editorTextArea);
 
-        ButtonListener saveListener = new ButtonListener();
-        ButtonListener redoListener = new ButtonListener();
-        ButtonListener undoListener = new ButtonListener();
 
         saveButton = new JButton("Save");
+        ButtonListener saveListener = new ButtonListener();
         saveButton.addActionListener(saveListener);
 
         redoButton = new JButton("Redo");
+        ButtonListener redoListener = new ButtonListener();
         redoButton.addActionListener(redoListener);
 
         undoButton = new JButton("Undo");
+        ButtonListener undoListener = new ButtonListener();
         undoButton.addActionListener(undoListener);
 
         jPanel.add(saveButton);
@@ -57,10 +57,12 @@ public class TextEditor extends JFrame{
 
             if(event.getSource() == saveButton){
                 saveAction();
-            } else if(event.getSource() == undoButton) {
-                undoAction();
             } else {
-                redoAction();
+                if(event.getSource() == undoButton){
+                    undoAction();
+                } else {
+                    redoAction();
+                }
             }
         }
 
@@ -103,7 +105,7 @@ public class TextEditor extends JFrame{
          *  perform redo
          */
         public void redoAction() {
-            if((savedFiles -1 ) > currentTextIndex){ //
+            if((savedFiles - 1 ) > currentTextIndex){ //
                 currentTextIndex++;
 
                 String restoredText = editorData.restoreFromMemento(
